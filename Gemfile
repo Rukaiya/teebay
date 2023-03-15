@@ -52,6 +52,7 @@ gem 'grape', '~> 1.6'
 gem 'grape-entity', '~> 0.10'
 gem 'grape_on_rails_routes', '~> 0.3'
 gem 'grape-kaminari'
+gem 'kaminari'
 
 # Securely configure rails applications
 gem "figaro"
