@@ -6,6 +6,9 @@ module UserPanel
     # Contains all the constant that will be used for development
     include Constants
 
+    # Helpers to send success or failure message to frontend
+    helpers UserPanel::V1::Helpers::ResponseHelpers
+
     #############################
     # Prefix and Formatting
     #############################
@@ -52,6 +55,8 @@ module UserPanel
     mount V1::Categories
     mount V1::Products
     mount V1::Users
+    mount V1::UserProducts
+    mount V1::MyProducts
   end
 end
 

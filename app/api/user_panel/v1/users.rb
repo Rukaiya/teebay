@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module UserPanel::V1
   class Users < UserPanel::Base
     resources :users do
@@ -13,19 +15,17 @@ module UserPanel::V1
         AuthToken.generate_access_token(user) if user.password == params[:password]
       rescue StandardError => e
         Rails.logger.info("Failed to login due to -#{e.full_message}")
-        error!("Failed to login due to -#{e.full_message}", 500)
+        error!('Failed to login', HTTP_CODE[:INTERNAL_SERVER_ERROR])
       end
 
       desc 'User Logout'
       delete :logout do
         error!('Not Found', HTTP_CODE[:NOT_FOUND]) unless AuthToken.remove_access_token(@current_user)
-        {
-          message: 'Successfully logged out',
-          status_code: HTTP_CODE[:OK]
-        }
+        success_response('Successfully logged out', HTTP_CODE[:OK])
+
       rescue StandardError => e
         Rails.logger.info("Failed to logout due to: #{e.full_message}")
-        error!("Failed to logout due to: #{e.full_message}", 500)
+        error!("Failed to logout due to: #{e.full_message}", HTTP_CODE[:INTERNAL_SERVER_ERROR])
       end
 
       desc 'User SignUp'
@@ -45,13 +45,10 @@ module UserPanel::V1
         error!('Password cannot be blank', HTTP_CODE[:NOT_ACCEPTABLE]) if params[:password].blank?
         error!('Password didn\'t match', HTTP_CODE[:NOT_ACCEPTABLE]) if params[:password] != params[:password_confirmation]
         User.create!(params)
-        {
-          status_code: 201,
-          message: 'Successfully created'
-        }
+        success_response('Successfully created', HTTP_CODE[:CREATED])
       rescue StandardError => e
         Rails.logger.info("Failed to signup due to -#{e.full_message}")
-        error!("Failed to signup due to -#{e.full_message}", 500)
+        error!('Failed to signup', HTTP_CODE[:INTERNAL_SERVER_ERROR])
       end
     end
   end
