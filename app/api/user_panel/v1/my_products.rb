@@ -3,19 +3,21 @@
 module UserPanel::V1
   class MyProducts < UserPanel::Base
     resources :my_products do
-      desc 'MY Product List'
+      desc 'My Product List'
       params do
         use :pagination, per_page: 30
+        optional :exchange_type, type: String, values: %w[buy rent]
       end
       get do
         products = Product.current_user_product(@current_user)
+        products.params[:exchange_type] if params[:exchange_type].present?
         UserPanel::V1::Entities::Products.represent(paginate(products).order(title: :desc))
       rescue StandardError => e
         Rails.logger.info "Unable to fetch user products due to, #{e.full_message}"
         error!('Unable to fetch user products', HTTP_CODE[:INTERNAL_SERVER_ERROR])
       end
 
-      desc 'MY Product Create'
+      desc 'My Product Create'
       params do
         requires :title, type: String
         requires :description, type: String

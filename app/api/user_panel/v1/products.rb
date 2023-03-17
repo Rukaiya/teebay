@@ -33,8 +33,10 @@ module UserPanel::V1
         post '/buy' do
           product = Product.find_by(id: params[:id])
           error!('Not Found', HTTP_CODE[:NOT_FOUND]) unless product.present?
-          check_availability = UserProduct.where(product_id: params[:id]).last.check_product_availability
-          error!('Product not available', HTTP_CODE[:NOT_ACCEPTABLE]) unless check_availability
+          user_product = UserProduct.where(product_id: params[:id]).last
+          if user_product.present? && !user_product.check_availability
+            error!('Product not available', HTTP_CODE[:NOT_ACCEPTABLE])
+          end
 
           UserProduct.create!(user_id: @current_user.id, product_id: params[:id])
           success_response('Successfully bought', HTTP_CODE[:OK])
@@ -51,8 +53,10 @@ module UserPanel::V1
         post '/rent' do
           product = Product.find_by(id: params[:id])
           error!('Not Found', HTTP_CODE[:NOT_FOUND]) unless product.present?
-          check_availability = UserProduct.where(product_id: params[:id]).last.check_product_availability
-          error!('Product not available', HTTP_CODE[:NOT_ACCEPTABLE]) unless check_availability
+          user_product = UserProduct.where(product_id: params[:id]).last
+          if user_product.present? && !user_product.check_availability
+            error!('Product not available', HTTP_CODE[:NOT_ACCEPTABLE])
+          end
           UserProduct.create!(user_id: @current_user.id,
                               product_id: params[:id],
                               exchange_type: :rent,
