@@ -17,7 +17,7 @@ User.find_or_create_by!(email: "teebay_user@sazim.io") do |user|
   user.first_name = "Teebay",
   user.last_name = "User",
   user.phone = "01857123456",
-  user.password_hash = "123456",
+  user.password = "123456",
   user.password_confirmation = "123456",
   user.address = "Banani, Dhaka"
 end
