@@ -1,5 +1,6 @@
 class Product < ApplicationRecord
   belongs_to :user, foreign_key: :created_by_id
+  has_one :user_product
   has_many :product_categories, dependent: :restrict_with_error
   accepts_nested_attributes_for :product_categories, reject_if: :all_blank, allow_destroy: true
 

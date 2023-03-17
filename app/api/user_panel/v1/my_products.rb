@@ -31,12 +31,6 @@ module UserPanel::V1
         error!('Product already exist with same title', HTTP_CODE[:NOT_ACCEPTABLE]) if product.present?
         params.merge!(created_by_id: @current_user.id)
         Product.create!(params)
-        # params[:categories].each do |category|
-        #   category = Category.find_by(id: category['id'])
-        #   error!('Category not found') unless category.present?
-        #   prod.product_categories.build(category_id: category.id)
-        # end
-        # prod.save!
         success_response('Successfully created', HTTP_CODE[:CREATED])
       rescue StandardError => e
         Rails.logger.info "Unable to create product due to, #{e.full_message}"

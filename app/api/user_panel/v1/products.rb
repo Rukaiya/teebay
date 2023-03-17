@@ -28,6 +28,41 @@ module UserPanel::V1
           Rails.logger.info "Unable to fetch product details due to, #{e.full_message}"
           error!('Unable to fetch product details', HTTP_CODE[:INTERNAL_SERVER_ERROR])
         end
+
+        desc 'Buy Product'
+        post '/buy' do
+          product = Product.find_by(id: params[:id])
+          error!('Not Found', HTTP_CODE[:NOT_FOUND]) unless product.present?
+          check_availability = UserProduct.where(product_id: params[:id]).last.check_product_availability
+          error!('Product not available', HTTP_CODE[:NOT_ACCEPTABLE]) unless check_availability
+
+          UserProduct.create!(user_id: @current_user.id, product_id: params[:id])
+          success_response('Successfully bought', HTTP_CODE[:OK])
+        rescue StandardError => e
+          Rails.logger.info "Unable to buy product due to, #{e.full_message}"
+          error!('Unable to buy product', HTTP_CODE[:INTERNAL_SERVER_ERROR])
+        end
+
+        desc 'Rent Product'
+        params do
+          requires :from_date, type: Date
+          requires :to_date, type: Date
+        end
+        post '/rent' do
+          product = Product.find_by(id: params[:id])
+          error!('Not Found', HTTP_CODE[:NOT_FOUND]) unless product.present?
+          check_availability = UserProduct.where(product_id: params[:id]).last.check_product_availability
+          error!('Product not available', HTTP_CODE[:NOT_ACCEPTABLE]) unless check_availability
+          UserProduct.create!(user_id: @current_user.id,
+                              product_id: params[:id],
+                              exchange_type: :rent,
+                              from_date: params[:from_date],
+                              to_date: params[:to_date])
+          success_response('Successfully rented', HTTP_CODE[:OK])
+        rescue StandardError => e
+          Rails.logger.info "Unable to rent product due to, #{e.full_message}"
+          error!('Unable to rent product', HTTP_CODE[:INTERNAL_SERVER_ERROR])
+        end
       end
     end
   end

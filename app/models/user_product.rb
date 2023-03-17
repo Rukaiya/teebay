@@ -5,5 +5,9 @@ class UserProduct < ApplicationRecord
 
   enum exchange_type: { buy: 0, rent: 1 }
 
-  # validates_presence_of :from_date, :to_date, if: exchange_type.rent?
+  validates_presence_of :from_date, :to_date, if: { exchange_type: :rent }
+
+  def check_product_availability
+    return false if (rent? && to_date.to_date <= Date.today) || buy?
+  end
 end

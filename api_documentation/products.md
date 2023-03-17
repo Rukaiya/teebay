@@ -2,11 +2,13 @@
 
 ---
 - [Product Details](#product-details)
+- [Product Buy](#product-buy)
+- [Product Rent](#product-rent)
 
 ### Product Details
 
 ---
-Returns response for product created by current user.
+Returns product details.
 
 * **URL:** `{{Base_url}}/user/api/v1/products/:id`
 
@@ -48,5 +50,100 @@ OR
 ```json
 {
   "error": "Unable to fetch product details"
+}
+```
+
+### Product Buy
+
+---
+Returns response for buying product.
+
+* **URL:** `{{Base_url}}/user/api/v1/products/:id/buy`
+
+* **Method:** `POST`
+
+* **Authorization:** `bearer-token`
+
+*  **Params:** None
+
+**Example**:
+
+* **Success Response:**
+
+* **Code:** 200 <br />
+  **Content:**
+```json
+{
+  "status_code": 200,
+  "message": "Successfully bought"
+}
+```
+
+* **Error Response:**
+* **Code:** 404 <br />
+  **Content:**
+```json
+{
+  "error": "Product not available"
+}
+```
+OR
+* **Code:** 500 <br />
+  **Content:**
+```json
+{
+  "error": "Unable to buy product"
+}
+```
+
+### Product Rent
+
+---
+Returns response for renting product.
+
+* **URL:** `{{Base_url}}/user/api/v1/products/:id/rent`
+
+* **Method:** `POST`
+
+* **Authorization:** `bearer-token`
+
+*  **Params:**
+
+`from_date` string required, format: "YYYY-MM-DD"
+
+`to_date` string required, format: "YYYY-MM-DD"
+
+**Example**:
+```json
+{
+    "from_date": "2023-03-16",
+    "to_date": "2023-03-17"
+}
+```
+* **Success Response:**
+
+* **Code:** 200 <br />
+  **Content:**
+```json
+{
+  "status_code": 200,
+  "message": "Successfully rented"
+}
+```
+
+* **Error Response:**
+* **Code:** 404 <br />
+  **Content:**
+```json
+{
+  "error": "Product not available"
+}
+```
+OR
+* **Code:** 500 <br />
+  **Content:**
+```json
+{
+  "error": "Unable to rent product"
 }
 ```
